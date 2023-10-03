@@ -19,7 +19,7 @@ jobs:
 
       - name: Delete current packages
         run: |          
-          rm -r types source-resolver backend_barretenberg noir_js acvm_js noirc_abi_wasm noir_wasm
+          rm -rf types source-resolver backend_barretenberg noir_js acvm_js noirc_abi_wasm noir_wasm
 
       - uses: actions/checkout@v3
         with:
