@@ -1,1 +1,1 @@
-/nix/store/3cibnxiny4g1pr9h0gdp0h0y2ls6jmay-noirc_abi_wasm-0.15.0/noirc_abi_wasm/web/noirc_abi_wasm_bg.wasm.d.ts
+/nix/store/5wnb3pvcgx7m5h3l8qhx67l39bg2m049-noirc_abi_wasm-0.15.0/noirc_abi_wasm/web/noirc_abi_wasm_bg.wasm.d.ts
