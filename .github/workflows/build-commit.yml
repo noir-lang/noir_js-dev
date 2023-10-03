@@ -74,22 +74,22 @@ jobs:
           yarn workspace @noir-lang/types build
           yarn workspace @noir-lang/types pack --out types.tgz
           mkdir -p tmp/types
-          tar -xvf types.tgz -C tmp/types
+          tar -xvf tooling/noir_js_types/types.tgz -C tmp/types
 
           yarn workspace @noir-lang/source-resolver build
           yarn workspace @noir-lang/source-resolver pack --out source-resolver.tgz
           mkdir -p tmp/source-resolver
-          tar -xvf source-resolver.tgz -C tmp/source-resolver
+          tar -xvf compiler/source-resolver/source-resolver.tgz -C tmp/source-resolver
 
           yarn workspace @noir-lang/backend_barretenberg build
           yarn workspace @noir-lang/backend_barretenberg pack --out backend_barretenberg.tgz
           mkdir -p tmp/backend_barretenberg
-          tar -xvf backend_barretenberg.tgz -C tmp/backend_barretenberg
+          tar -xvf tooling/noir_js_backend_barretenberg/backend_barretenberg.tgz -C tmp/backend_barretenberg
 
           yarn workspace @noir-lang/noir_js build
           yarn workspace @noir-lang/noir_js pack --out noir_js.tgz
           mkdir -p tmp/noir_js
-          tar -xvf noir_js.tgz -C tmp/noir_js
+          tar -xvf tooling/noir_js/noir_js.tgz -C tmp/noir_js
 
       - name: Copy packages to root
         run: |          
