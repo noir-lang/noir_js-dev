@@ -1,0 +1,1 @@
+/nix/store/hqajw9nakf9140vfgarfg837bcgbgpgw-acvm_js-0.15.0/acvm_js/nodejs/acvm_js_bg.wasm.d.ts
