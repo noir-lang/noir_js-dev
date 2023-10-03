@@ -54,7 +54,20 @@ jobs:
           cp -r ./result/noirc_abi_wasm/web ./tooling/noirc_abi_wasm
           cp -r ./result/noir_wasm/nodejs ./compiler/wasm
           cp -r ./result/noir_wasm/web ./compiler/wasm
-          
+
+      - name: Use Yarn Cache
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: "**/node_modules"
+          key: yarn-v1-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Install Noir Workspace Dependencies
+        working-directory: ".cache/noir"
+        run: yarn --immutable
+        shell: bash
+        if: steps.cache.outputs.cache-hit != 'true'
+
       - name: Build all pure js packages
         working-directory: ".cache/noir"
         run: |
