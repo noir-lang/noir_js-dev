@@ -105,9 +105,9 @@ jobs:
           mkdir -p noir_js
           cp -r .cache/noir/tmp/noir_js/package/* ./noir_js/
 
-          cp -r $(readlink -f .cache/noir/result/acvm_js) ./acvm_js
-          cp -r $(readlink -f .cache/noir/result/noirc_abi_wasm) ./noirc_abi_wasm
-          cp -r $(readlink -f .cache/noir/result/noir_wasm) ./noir_wasm
+          cp -r $(readlink -f .cache/noir/result)/acvm_js ./acvm_js
+          cp -r $(readlink -f .cache/noir/result)/noirc_abi_wasm ./noirc_abi_wasm
+          cp -r $(readlink -f .cache/noir/result)/noir_wasm ./noir_wasm
 
       - name: Configure git
         run: |
