@@ -105,6 +105,9 @@ jobs:
           mkdir -p noir_js
           cp -r .cache/noir/tmp/noir_js/package/* ./noir_js/
 
+          mkdir -p ./acvm_js/
+          mkdir -p ./noirc_abi_wasm/
+          mkdir -p ./noir_wasm/
           cp -rL $(readlink -f .cache/noir/result)/acvm_js/* ./acvm_js/
           cp -rL $(readlink -f .cache/noir/result)/noirc_abi_wasm/* ./noirc_abi_wasm/
           cp -rL $(readlink -f .cache/noir/result)/noir_wasm/* ./noir_wasm/
