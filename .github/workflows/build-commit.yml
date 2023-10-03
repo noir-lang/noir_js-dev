@@ -15,13 +15,13 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout
+        uses: actions/checkout@v3
 
       - name: Delete current packages
         run: |          
           rm -r types source-resolver backend_barretenberg noir_js acvm_js noirc_abi_wasm noir_wasm
 
-      - uses: actions/checkout
+      - uses: actions/checkout@v3
         with:
           repository: "noir-lang/noir"
           ref: ${{ inputs.noir-ref || 'master' }}
