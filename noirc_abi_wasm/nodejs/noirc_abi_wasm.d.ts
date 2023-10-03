@@ -1,1 +1,24 @@
-/nix/store/n105nbkd4zcm927p8d5yg3x9phbz3k1k-noirc_abi_wasm-0.16.0/noirc_abi_wasm/nodejs/noirc_abi_wasm.d.ts
+/* tslint:disable */
+/* eslint-disable */
+/**
+* @param {any} abi
+* @param {any} inputs
+* @param {any} return_value
+* @returns {WitnessMap}
+*/
+export function abiEncode(abi: any, inputs: any, return_value: any): WitnessMap;
+/**
+* @param {any} abi
+* @param {WitnessMap} witness_map
+* @returns {any}
+*/
+export function abiDecode(abi: any, witness_map: WitnessMap): any;
+
+// Map from witness index to hex string value of witness.
+export type WitnessMap = Map<number, string>;
+
+
+
+export type ABIError = Error;
+
+

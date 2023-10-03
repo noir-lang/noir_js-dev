@@ -1,1 +1,25 @@
-/nix/store/bc07sngvi2nnj1c14pcv7b66jnqyj9n5-noir_wasm-0.16.0/noir_wasm/nodejs/noir_wasm.d.ts
+/* tslint:disable */
+/* eslint-disable */
+/**
+* @param {any} args
+* @returns {any}
+*/
+export function compile(args: any): any;
+/**
+* @param {string} level
+*/
+export function init_log_level(level: string): void;
+/**
+* @returns {any}
+*/
+export function build_info(): any;
+/**
+* @param {Uint8Array} bytes
+* @returns {any}
+*/
+export function acir_read_bytes(bytes: Uint8Array): any;
+/**
+* @param {any} acir
+* @returns {Uint8Array}
+*/
+export function acir_write_bytes(acir: any): Uint8Array;
