@@ -132,22 +132,6 @@ function handleError(f, args) {
         wasm.__wbindgen_export_2(addHeapObject(e));
     }
 }
-/**
-* @param {string} level
-*/
-export function init_log_level(level) {
-    const ptr0 = passStringToWasm0(level, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
-    const len0 = WASM_VECTOR_LEN;
-    wasm.init_log_level(ptr0, len0);
-}
-
-/**
-* @returns {any}
-*/
-export function build_info() {
-    const ret = wasm.build_info();
-    return takeObject(ret);
-}
 
 function passArray8ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 1) >>> 0;
@@ -186,6 +170,23 @@ export function acir_write_bytes(acir) {
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
     }
+}
+
+/**
+* @param {string} level
+*/
+export function init_log_level(level) {
+    const ptr0 = passStringToWasm0(level, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
+    const len0 = WASM_VECTOR_LEN;
+    wasm.init_log_level(ptr0, len0);
+}
+
+/**
+* @returns {any}
+*/
+export function build_info() {
+    const ret = wasm.build_info();
+    return takeObject(ret);
 }
 
 async function __wbg_load(module, imports) {
