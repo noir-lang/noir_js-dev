@@ -1,11 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {any} args
-* @returns {any}
-*/
-export function compile(args: any): any;
-/**
 * @param {Uint8Array} bytes
 * @returns {any}
 */
@@ -23,21 +18,32 @@ export function init_log_level(level: string): void;
 * @returns {any}
 */
 export function build_info(): any;
+/**
+* @param {string} entry_point
+* @param {boolean | undefined} contracts
+* @param {string[] | undefined} dependencies
+* @returns {any}
+*/
+export function compile(entry_point: string, contracts?: boolean, dependencies?: string[]): any;
+
+export type CompileError = Error;
+
+
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly compile: (a: number) => number;
   readonly acir_read_bytes: (a: number, b: number) => number;
   readonly acir_write_bytes: (a: number, b: number) => void;
   readonly init_log_level: (a: number, b: number) => void;
   readonly build_info: () => number;
+  readonly compile: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly __wbindgen_export_0: (a: number) => number;
   readonly __wbindgen_export_1: (a: number, b: number, c: number) => number;
-  readonly __wbindgen_export_2: (a: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_export_3: (a: number, b: number) => void;
+  readonly __wbindgen_export_2: (a: number, b: number) => void;
+  readonly __wbindgen_export_3: (a: number) => void;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;

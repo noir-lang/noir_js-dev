@@ -1,11 +1,6 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {any} args
-* @returns {any}
-*/
-export function compile(args: any): any;
-/**
 * @param {Uint8Array} bytes
 * @returns {any}
 */
@@ -23,3 +18,14 @@ export function init_log_level(level: string): void;
 * @returns {any}
 */
 export function build_info(): any;
+/**
+* @param {string} entry_point
+* @param {boolean | undefined} contracts
+* @param {string[] | undefined} dependencies
+* @returns {any}
+*/
+export function compile(entry_point: string, contracts?: boolean, dependencies?: string[]): any;
+
+export type CompileError = Error;
+
+
