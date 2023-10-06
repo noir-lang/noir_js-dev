@@ -14,8 +14,11 @@ jobs:
   build-noir_wasm:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          repository: "noir-lang/noir"
+          ref: ${{ inputs.noir-ref || 'master' }}
+          path: ".cache/noir"
 
       - name: Setup Nix
         uses: ./.github/actions/nix
@@ -25,14 +28,18 @@ jobs:
           cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
 
       - name: Build wasm package
+        working-directory: ".cache/noir"
         run: |
           nix build -L .#noir_wasm
 
   build-noirc_abi_wasm:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          repository: "noir-lang/noir"
+          ref: ${{ inputs.noir-ref || 'master' }}
+          path: ".cache/noir"
 
       - name: Setup Nix
         uses: ./.github/actions/nix
@@ -42,14 +49,18 @@ jobs:
           cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
         
       - name: Build wasm package
+        working-directory: ".cache/noir"
         run: |
           nix build -L .#noirc_abi_wasm
 
   build-acvm_js:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v3
+        with:
+          repository: "noir-lang/noir"
+          ref: ${{ inputs.noir-ref || 'master' }}
+          path: ".cache/noir"
 
       - name: Setup Nix
         uses: ./.github/actions/nix
@@ -59,6 +70,7 @@ jobs:
           cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
         
       - name: Build wasm package
+        working-directory: ".cache/noir"
         run: |
           nix build -L .#acvm_js
   
