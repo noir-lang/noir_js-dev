@@ -22,7 +22,7 @@ export class Noir {
         const serializedWitness = await generateWitness(this.circuit, inputs);
         return this.backend.generateFinalProof(serializedWitness);
     }
-    async verifyFinalProof(proof) {
-        return this.backend.verifyFinalProof(proof);
+    async verifyFinalProof(proofData) {
+        return this.backend.verifyFinalProof(proofData);
     }
 }

@@ -28,8 +28,8 @@ class Noir {
         const serializedWitness = await (0, witness_generation_js_1.generateWitness)(this.circuit, inputs);
         return this.backend.generateFinalProof(serializedWitness);
     }
-    async verifyFinalProof(proof) {
-        return this.backend.verifyFinalProof(proof);
+    async verifyFinalProof(proofData) {
+        return this.backend.verifyFinalProof(proofData);
     }
 }
 exports.Noir = Noir;

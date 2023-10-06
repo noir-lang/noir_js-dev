@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BarretenbergBackend = void 0;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 const serialize_js_1 = require("./serialize.js");
+// This is the number of bytes in a UltraPlonk proof
+// minus the public inputs.
+const numBytesInProofWithoutPublicInputs = 2144;
 class BarretenbergBackend {
     // These type assertions are used so that we don't
     // have to initialize `api` and `acirComposer` in the constructor.
@@ -57,8 +60,17 @@ class BarretenbergBackend {
     }
     async generateProof(decompressedWitness, makeEasyToVerifyInCircuit) {
         await this.instantiate();
-        const proof = await this.api.acirCreateProof(this.acirComposer, this.acirUncompressedBytecode, decompressedWitness, makeEasyToVerifyInCircuit);
-        return proof;
+        const proofWithPublicInputs = await this.api.acirCreateProof(this.acirComposer, this.acirUncompressedBytecode, decompressedWitness, makeEasyToVerifyInCircuit);
+        const splitIndex = proofWithPublicInputs.length - numBytesInProofWithoutPublicInputs;
+        const publicInputsConcatenated = proofWithPublicInputs.slice(0, splitIndex);
+        const publicInputSize = 32;
+        const publicInputs = [];
+        for (let i = 0; i < publicInputsConcatenated.length; i += publicInputSize) {
+            const publicInput = publicInputsConcatenated.slice(i, i + publicInputSize);
+            publicInputs.push(publicInput);
+        }
+        const proof = proofWithPublicInputs.slice(splitIndex);
+        return { proof, publicInputs };
     }
     // Generates artifacts that will be passed to a circuit that will verify this proof.
     //
@@ -69,8 +81,9 @@ class BarretenbergBackend {
     // method.
     //
     // The number of public inputs denotes how many public inputs are in the inner proof.
-    async generateIntermediateProofArtifacts(proof, numOfPublicInputs = 0) {
+    async generateIntermediateProofArtifacts(proofData, numOfPublicInputs = 0) {
         await this.instantiate();
+        const proof = reconstructProofWithPublicInputs(proofData);
         const proofAsFields = await this.api.acirSerializeProofIntoFields(this.acirComposer, proof, numOfPublicInputs);
         // TODO: perhaps we should put this in the init function. Need to benchmark
         // TODO how long it takes.
@@ -83,12 +96,14 @@ class BarretenbergBackend {
             vkHash: vk[1].toString(),
         };
     }
-    async verifyFinalProof(proof) {
+    async verifyFinalProof(proofData) {
+        const proof = reconstructProofWithPublicInputs(proofData);
         const makeEasyToVerifyInCircuit = false;
         const verified = await this.verifyProof(proof, makeEasyToVerifyInCircuit);
         return verified;
     }
-    async verifyIntermediateProof(proof) {
+    async verifyIntermediateProof(proofData) {
+        const proof = reconstructProofWithPublicInputs(proofData);
         const makeEasyToVerifyInCircuit = true;
         return this.verifyProof(proof, makeEasyToVerifyInCircuit);
     }
@@ -105,3 +120,20 @@ class BarretenbergBackend {
     }
 }
 exports.BarretenbergBackend = BarretenbergBackend;
+function reconstructProofWithPublicInputs(proofData) {
+    // Flatten publicInputs
+    const publicInputsConcatenated = flattenUint8Arrays(proofData.publicInputs);
+    // Concatenate publicInputs and proof
+    const proofWithPublicInputs = Uint8Array.from([...publicInputsConcatenated, ...proofData.proof]);
+    return proofWithPublicInputs;
+}
+function flattenUint8Arrays(arrays) {
+    const totalLength = arrays.reduce((acc, val) => acc + val.length, 0);
+    const result = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const arr of arrays) {
+        result.set(arr, offset);
+        offset += arr.length;
+    }
+    return result;
+}
