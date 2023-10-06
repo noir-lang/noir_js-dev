@@ -14,6 +14,9 @@ jobs:
   build-noir_wasm:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - uses: actions/checkout@v3
         with:
           repository: "noir-lang/noir"
@@ -35,6 +38,9 @@ jobs:
   build-noirc_abi_wasm:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
       - uses: actions/checkout@v3
         with:
           repository: "noir-lang/noir"
@@ -56,6 +62,9 @@ jobs:
   build-acvm_js:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - uses: actions/checkout@v3
         with:
           repository: "noir-lang/noir"
