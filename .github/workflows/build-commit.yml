@@ -10,8 +10,61 @@ env:
   CI: true
 
 jobs:
+
+  build-noir_wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nix-cache-name: ${{ vars.NIX_CACHE_NAME }}
+          cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
+
+      - name: Build wasm package
+        run: |
+          nix build -L .#noir_wasm
+
+  build-noirc_abi_wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nix-cache-name: ${{ vars.NIX_CACHE_NAME }}
+          cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
+        
+      - name: Build wasm package
+        run: |
+          nix build -L .#noirc_abi_wasm
+
+  build-acvm_js:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+
+      - name: Setup Nix
+        uses: ./.github/actions/nix
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nix-cache-name: ${{ vars.NIX_CACHE_NAME }}
+          cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
+        
+      - name: Build wasm package
+        run: |
+          nix build -L .#acvm_js
+  
   build-packages:
     runs-on: ubuntu-latest
+    needs: [build-acvm_js, build-noirc_abi_wasm, build-noir_wasm]
 
     steps:
       - name: Checkout
@@ -34,26 +87,11 @@ jobs:
           echo "NOIR_REV_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Setup Nix
-        uses: cachix/install-nix-action@v22
+        uses: ./.github/actions/nix
         with:
-          nix_path: nixpkgs=channel:nixos-23.05
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: cachix/cachix-action@v12
-        with:
-          name: barretenberg
-          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
-
-      - name: Build `#all_wasm` package targets, install into workspace
-        working-directory: ".cache/noir"
-        run: |
-          nix build -L .#all_wasm
-          cp -r ./result/acvm_js/nodejs ./acvm-repo/acvm_js
-          cp -r ./result/acvm_js/web ./acvm-repo/acvm_js
-          cp -r ./result/noirc_abi_wasm/nodejs ./tooling/noirc_abi_wasm
-          cp -r ./result/noirc_abi_wasm/web ./tooling/noirc_abi_wasm
-          cp -r ./result/noir_wasm/nodejs ./compiler/wasm
-          cp -r ./result/noir_wasm/web ./compiler/wasm
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          nix-cache-name: ${{ vars.NIX_CACHE_NAME }}
+          cachix-auth-token: ${{ secrets.CACHIXAUTHTOKEN }}
 
       - name: Use Yarn Cache
         uses: actions/cache@v3
@@ -64,29 +102,30 @@ jobs:
 
       - name: Install Noir Workspace Dependencies
         working-directory: ".cache/noir"
-        run: yarn --immutable
+        run: yarn install
         shell: bash
         if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Build ES Packages
+        working-directory: ".cache/noir"
+        run: yarn prepare:publish
+
 
       - name: Build all pure js packages
         working-directory: ".cache/noir"
         run: |
-          yarn workspace @noir-lang/types build
           yarn workspace @noir-lang/types pack --out types.tgz
           mkdir -p tmp/types
           tar -xvf tooling/noir_js_types/types.tgz -C tmp/types
 
-          yarn workspace @noir-lang/source-resolver build
           yarn workspace @noir-lang/source-resolver pack --out source-resolver.tgz
           mkdir -p tmp/source-resolver
           tar -xvf compiler/source-resolver/source-resolver.tgz -C tmp/source-resolver
 
-          yarn workspace @noir-lang/backend_barretenberg build
           yarn workspace @noir-lang/backend_barretenberg pack --out backend_barretenberg.tgz
           mkdir -p tmp/backend_barretenberg
           tar -xvf tooling/noir_js_backend_barretenberg/backend_barretenberg.tgz -C tmp/backend_barretenberg
 
-          yarn workspace @noir-lang/noir_js build
           yarn workspace @noir-lang/noir_js pack --out noir_js.tgz
           mkdir -p tmp/noir_js
           tar -xvf tooling/noir_js/noir_js.tgz -C tmp/noir_js
