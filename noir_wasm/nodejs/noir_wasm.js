@@ -10,20 +10,6 @@ heap.push(undefined, null, true, false);
 
 function getObject(idx) { return heap[idx]; }
 
-let heap_next = heap.length;
-
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
-}
-
 let WASM_VECTOR_LEN = 0;
 
 let cachedUint8Memory0 = null;
@@ -99,6 +85,20 @@ function getInt32Memory0() {
         cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
     }
     return cachedInt32Memory0;
+}
+
+let heap_next = heap.length;
+
+function dropObject(idx) {
+    if (idx < 132) return;
+    heap[idx] = heap_next;
+    heap_next = idx;
+}
+
+function takeObject(idx) {
+    const ret = getObject(idx);
+    dropObject(idx);
+    return ret;
 }
 
 let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
@@ -207,6 +207,19 @@ function handleError(f, args) {
     }
 }
 
+module.exports.__wbindgen_string_get = function(arg0, arg1) {
+    const obj = getObject(arg1);
+    const ret = typeof(obj) === 'string' ? obj : undefined;
+    var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
+    var len1 = WASM_VECTOR_LEN;
+    getInt32Memory0()[arg0 / 4 + 1] = len1;
+    getInt32Memory0()[arg0 / 4 + 0] = ptr1;
+};
+
+module.exports.__wbindgen_object_drop_ref = function(arg0) {
+    takeObject(arg0);
+};
+
 module.exports.__wbindgen_is_undefined = function(arg0) {
     const ret = getObject(arg0) === undefined;
     return ret;
@@ -215,19 +228,6 @@ module.exports.__wbindgen_is_undefined = function(arg0) {
 module.exports.__wbg_constructor_ac1f808f67a5f1e9 = function(arg0) {
     const ret = new Error(takeObject(arg0));
     return addHeapObject(ret);
-};
-
-module.exports.__wbindgen_object_drop_ref = function(arg0) {
-    takeObject(arg0);
-};
-
-module.exports.__wbindgen_string_get = function(arg0, arg1) {
-    const obj = getObject(arg1);
-    const ret = typeof(obj) === 'string' ? obj : undefined;
-    var ptr1 = isLikeNone(ret) ? 0 : passStringToWasm0(ret, wasm.__wbindgen_export_0, wasm.__wbindgen_export_1);
-    var len1 = WASM_VECTOR_LEN;
-    getInt32Memory0()[arg0 / 4 + 1] = len1;
-    getInt32Memory0()[arg0 / 4 + 0] = ptr1;
 };
 
 module.exports.__wbg_readfile_0c1777c7c5aa8c92 = function() { return handleError(function (arg0, arg1, arg2) {

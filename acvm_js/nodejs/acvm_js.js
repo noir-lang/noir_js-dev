@@ -1191,7 +1191,7 @@ module.exports.__wbindgen_function_table = function() {
 };
 
 module.exports.__wbindgen_closure_wrapper613 = function(arg0, arg1, arg2) {
-    const ret = makeMutClosure(arg0, arg1, 193, __wbg_adapter_54);
+    const ret = makeMutClosure(arg0, arg1, 194, __wbg_adapter_54);
     return addHeapObject(ret);
 };
 

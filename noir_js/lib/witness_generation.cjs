@@ -8,7 +8,7 @@ const serialize_js_1 = require("./serialize.cjs");
 // Generates the witnesses needed to feed into the chosen proving system
 async function generateWitness(compiledProgram, inputs) {
     // Throws on ABI encoding error
-    const witnessMap = (0, noirc_abi_1.abiEncode)(compiledProgram.abi, inputs, null);
+    const witnessMap = (0, noirc_abi_1.abiEncode)(compiledProgram.abi, inputs);
     // Execute the circuit to generate the rest of the witnesses and serialize
     // them into a Uint8Array.
     try {

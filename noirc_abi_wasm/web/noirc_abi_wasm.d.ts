@@ -1,18 +1,50 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* @param {any} abi
-* @param {any} inputs
-* @param {any} return_value
+* @param {Abi} abi
+* @param {InputMap} inputs
+* @param {InputValue | undefined} return_value
 * @returns {WitnessMap}
 */
-export function abiEncode(abi: any, inputs: any, return_value: any): WitnessMap;
+export function abiEncode(abi: Abi, inputs: InputMap, return_value?: InputValue): WitnessMap;
 /**
-* @param {any} abi
+* @param {Abi} abi
 * @param {WitnessMap} witness_map
 * @returns {any}
 */
-export function abiDecode(abi: any, witness_map: WitnessMap): any;
+export function abiDecode(abi: Abi, witness_map: WitnessMap): any;
+
+export type Field = string | number | boolean;
+export type InputValue = Field | Field[] | InputMap;
+export type InputMap = { [key: string]: InputValue };
+
+
+
+export type Visibility = "public" | "private";
+export type Sign = "unsigned" | "signed";
+export type AbiType = 
+    { kind: "field" } |
+    { kind: "boolean" } |
+    { kind: "string", length: number } |
+    { kind: "integer", sign: Sign, width: number } |
+    { kind: "array", length: number, type: AbiType } |
+    { kind: "tuple", fields: AbiType[] } |
+    { kind: "struct", path: string, fields: [string, AbiType][] };
+    
+export type AbiParameter = {
+    name: string,
+    type: AbiType,
+    visibility: Visibility,
+};
+    
+export type Abi = {
+    parameters: AbiParameter[],
+    param_witnesses: Record<string, number[]>,
+    return_type: AbiType | null,
+    return_witnesses: number[],
+}
+
+
 
 // Map from witness index to hex string value of witness.
 export type WitnessMap = Map<number, string>;

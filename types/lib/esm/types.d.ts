@@ -1,3 +1,4 @@
+import { Abi } from '@noir-lang/noirc_abi';
 export interface Backend {
     generateFinalProof(decompressedWitness: Uint8Array): Promise<ProofData>;
     generateIntermediateProof(decompressedWitness: Uint8Array): Promise<ProofData>;
@@ -10,5 +11,5 @@ export type ProofData = {
 };
 export type CompiledCircuit = {
     bytecode: string;
-    abi: object;
+    abi: Abi;
 };
