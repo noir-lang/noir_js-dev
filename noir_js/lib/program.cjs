@@ -1,12 +1,36 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Noir = void 0;
 const witness_generation_js_1 = require("./witness_generation.cjs");
-const noirc_abi_1 = __importDefault(require("@noir-lang/noirc_abi"));
+const noirc_abi_1 = __importStar(require("@noir-lang/noirc_abi"));
 const acvm_js_1 = __importDefault(require("@noir-lang/acvm_js"));
+const serialize_js_1 = require("./serialize.cjs");
 class Noir {
     circuit;
     backend;
@@ -22,14 +46,25 @@ class Noir {
             await Promise.all([(0, noirc_abi_1.default)(), (0, acvm_js_1.default)()]);
         }
     }
+    getBackend() {
+        if (this.backend === undefined)
+            throw new Error('Operation requires a backend but none was provided');
+        return this.backend;
+    }
+    // Initial inputs to your program
+    async execute(inputs) {
+        await this.init();
+        const witness = await (0, witness_generation_js_1.generateWitness)(this.circuit, inputs);
+        const { return_value: returnValue } = (0, noirc_abi_1.abiDecode)(this.circuit.abi, witness);
+        return { witness: (0, serialize_js_1.witnessMapToUint8Array)(witness), returnValue };
+    }
     // Initial inputs to your program
     async generateFinalProof(inputs) {
-        await this.init();
-        const serializedWitness = await (0, witness_generation_js_1.generateWitness)(this.circuit, inputs);
-        return this.backend.generateFinalProof(serializedWitness);
+        const { witness } = await this.execute(inputs);
+        return this.getBackend().generateFinalProof(witness);
     }
     async verifyFinalProof(proofData) {
-        return this.backend.verifyFinalProof(proofData);
+        return this.getBackend().verifyFinalProof(proofData);
     }
 }
 exports.Noir = Noir;

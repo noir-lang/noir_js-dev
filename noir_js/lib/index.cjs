@@ -23,13 +23,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Noir = exports.witnessMapToUint8Array = exports.acirToUint8Array = exports.generateWitness = exports.abi = exports.acvm = void 0;
+exports.Noir = exports.witnessMapToUint8Array = exports.acirToUint8Array = exports.abi = exports.acvm = void 0;
 const acvm = __importStar(require("@noir-lang/acvm_js"));
 exports.acvm = acvm;
 const abi = __importStar(require("@noir-lang/noirc_abi"));
 exports.abi = abi;
-var witness_generation_js_1 = require("./witness_generation.cjs");
-Object.defineProperty(exports, "generateWitness", { enumerable: true, get: function () { return witness_generation_js_1.generateWitness; } });
 var serialize_js_1 = require("./serialize.cjs");
 Object.defineProperty(exports, "acirToUint8Array", { enumerable: true, get: function () { return serialize_js_1.acirToUint8Array; } });
 Object.defineProperty(exports, "witnessMapToUint8Array", { enumerable: true, get: function () { return serialize_js_1.witnessMapToUint8Array; } });

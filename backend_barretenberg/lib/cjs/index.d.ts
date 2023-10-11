@@ -5,7 +5,7 @@ export declare class BarretenbergBackend implements Backend {
     private acirUncompressedBytecode;
     private numberOfThreads;
     constructor(acirCircuit: CompiledCircuit, numberOfThreads?: number);
-    private instantiate;
+    instantiate(): Promise<void>;
     generateFinalProof(decompressedWitness: Uint8Array): Promise<ProofData>;
     generateIntermediateProof(witness: Uint8Array): Promise<ProofData>;
     generateProof(decompressedWitness: Uint8Array, makeEasyToVerifyInCircuit: boolean): Promise<ProofData>;
