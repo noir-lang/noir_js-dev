@@ -4,6 +4,7 @@ export interface Backend {
     generateIntermediateProof(decompressedWitness: Uint8Array): Promise<ProofData>;
     verifyFinalProof(proofData: ProofData): Promise<boolean>;
     verifyIntermediateProof(proofData: ProofData): Promise<boolean>;
+    destroy(): Promise<void>;
 }
 export type ProofData = {
     publicInputs: Uint8Array[];

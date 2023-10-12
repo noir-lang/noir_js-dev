@@ -5,6 +5,7 @@ export declare class Noir {
     private backend?;
     constructor(circuit: CompiledCircuit, backend?: Backend | undefined);
     init(): Promise<void>;
+    destroy(): Promise<void>;
     private getBackend;
     execute(inputs: InputMap): Promise<{
         witness: Uint8Array;

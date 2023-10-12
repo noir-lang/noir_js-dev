@@ -1,7 +1,6 @@
 import { generateWitness } from "./witness_generation.mjs";
 import initAbi, { abiDecode } from '@noir-lang/noirc_abi';
-import initACVM from '@noir-lang/acvm_js';
-import { witnessMapToUint8Array } from "./serialize.mjs";
+import initACVM, { compressWitness } from '@noir-lang/acvm_js';
 export class Noir {
     circuit;
     backend;
@@ -17,6 +16,9 @@ export class Noir {
             await Promise.all([initAbi(), initACVM()]);
         }
     }
+    async destroy() {
+        await this.backend?.destroy();
+    }
     getBackend() {
         if (this.backend === undefined)
             throw new Error('Operation requires a backend but none was provided');
@@ -27,7 +29,7 @@ export class Noir {
         await this.init();
         const witness = await generateWitness(this.circuit, inputs);
         const { return_value: returnValue } = abiDecode(this.circuit.abi, witness);
-        return { witness: witnessMapToUint8Array(witness), returnValue };
+        return { witness: compressWitness(witness), returnValue };
     }
     // Initial inputs to your program
     async generateFinalProof(inputs) {

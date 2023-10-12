@@ -22,15 +22,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Noir = void 0;
 const witness_generation_js_1 = require("./witness_generation.cjs");
 const noirc_abi_1 = __importStar(require("@noir-lang/noirc_abi"));
-const acvm_js_1 = __importDefault(require("@noir-lang/acvm_js"));
-const serialize_js_1 = require("./serialize.cjs");
+const acvm_js_1 = __importStar(require("@noir-lang/acvm_js"));
 class Noir {
     circuit;
     backend;
@@ -46,6 +42,9 @@ class Noir {
             await Promise.all([(0, noirc_abi_1.default)(), (0, acvm_js_1.default)()]);
         }
     }
+    async destroy() {
+        await this.backend?.destroy();
+    }
     getBackend() {
         if (this.backend === undefined)
             throw new Error('Operation requires a backend but none was provided');
@@ -56,7 +55,7 @@ class Noir {
         await this.init();
         const witness = await (0, witness_generation_js_1.generateWitness)(this.circuit, inputs);
         const { return_value: returnValue } = (0, noirc_abi_1.abiDecode)(this.circuit.abi, witness);
-        return { witness: (0, serialize_js_1.witnessMapToUint8Array)(witness), returnValue };
+        return { witness: (0, acvm_js_1.compressWitness)(witness), returnValue };
     }
     // Initial inputs to your program
     async generateFinalProof(inputs) {

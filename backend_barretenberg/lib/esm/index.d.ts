@@ -1,14 +1,15 @@
 import { Backend, CompiledCircuit, ProofData } from '@noir-lang/types';
+import { BackendOptions } from './types.js';
 export declare class BarretenbergBackend implements Backend {
+    private options;
     private api;
     private acirComposer;
     private acirUncompressedBytecode;
-    private numberOfThreads;
-    constructor(acirCircuit: CompiledCircuit, numberOfThreads?: number);
+    constructor(acirCircuit: CompiledCircuit, options?: BackendOptions);
     instantiate(): Promise<void>;
     generateFinalProof(decompressedWitness: Uint8Array): Promise<ProofData>;
     generateIntermediateProof(witness: Uint8Array): Promise<ProofData>;
-    generateProof(decompressedWitness: Uint8Array, makeEasyToVerifyInCircuit: boolean): Promise<ProofData>;
+    generateProof(compressedWitness: Uint8Array, makeEasyToVerifyInCircuit: boolean): Promise<ProofData>;
     generateIntermediateProofArtifacts(proofData: ProofData, numOfPublicInputs?: number): Promise<{
         proofAsFields: string[];
         vkAsFields: string[];

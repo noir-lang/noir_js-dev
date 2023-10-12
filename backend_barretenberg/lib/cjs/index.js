@@ -2,11 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BarretenbergBackend = void 0;
 /* eslint-disable  @typescript-eslint/no-explicit-any */
+const fflate_1 = require("fflate");
 const serialize_js_1 = require("./serialize.js");
 // This is the number of bytes in a UltraPlonk proof
 // minus the public inputs.
 const numBytesInProofWithoutPublicInputs = 2144;
 class BarretenbergBackend {
+    options;
     // These type assertions are used so that we don't
     // have to initialize `api` and `acirComposer` in the constructor.
     // These are initialized asynchronously in the `init` function,
@@ -14,10 +16,9 @@ class BarretenbergBackend {
     api;
     acirComposer;
     acirUncompressedBytecode;
-    numberOfThreads = 1;
-    constructor(acirCircuit, numberOfThreads = 1) {
+    constructor(acirCircuit, options = { threads: 1 }) {
+        this.options = options;
         const acirBytecodeBase64 = acirCircuit.bytecode;
-        this.numberOfThreads = numberOfThreads;
         this.acirUncompressedBytecode = (0, serialize_js_1.acirToUint8Array)(acirBytecodeBase64);
     }
     async instantiate() {
@@ -25,7 +26,7 @@ class BarretenbergBackend {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             const { Barretenberg, RawBuffer, Crs } = await import('@aztec/bb.js');
-            const api = await Barretenberg.new(this.numberOfThreads);
+            const api = await Barretenberg.new(this.options.threads);
             const [_exact, _total, subgroupSize] = await api.acirGetCircuitSizes(this.acirUncompressedBytecode);
             const crs = await Crs.new(subgroupSize + 1);
             await api.commonInitSlabAllocator(subgroupSize);
@@ -58,9 +59,9 @@ class BarretenbergBackend {
         const makeEasyToVerifyInCircuit = true;
         return this.generateProof(witness, makeEasyToVerifyInCircuit);
     }
-    async generateProof(decompressedWitness, makeEasyToVerifyInCircuit) {
+    async generateProof(compressedWitness, makeEasyToVerifyInCircuit) {
         await this.instantiate();
-        const proofWithPublicInputs = await this.api.acirCreateProof(this.acirComposer, this.acirUncompressedBytecode, decompressedWitness, makeEasyToVerifyInCircuit);
+        const proofWithPublicInputs = await this.api.acirCreateProof(this.acirComposer, this.acirUncompressedBytecode, (0, fflate_1.decompressSync)(compressedWitness), makeEasyToVerifyInCircuit);
         const splitIndex = proofWithPublicInputs.length - numBytesInProofWithoutPublicInputs;
         const publicInputsConcatenated = proofWithPublicInputs.slice(0, splitIndex);
         const publicInputSize = 32;

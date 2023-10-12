@@ -161,13 +161,13 @@ export type BuildInfo = {
 
 
 
-export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
-
-
-
 export type ExecutionError = Error & {
     callStack?: string[];
 };
+
+
+
+export type LogLevel = "OFF" | "ERROR" | "WARN" | "INFO" | "DEBUG" | "TRACE";
 
 
 
